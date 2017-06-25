@@ -1,0 +1,45 @@
+<html>
+
+<head>
+  <script>
+    var ws = new WebSocket('ws://localhost:3005');
+
+    ws.onmessage = (event) => {
+        console.log(event.data);
+    }
+
+    function getAllData() {
+        var msg = {
+            "type": "request",
+            "method": "getAllData",
+            "id": "abcd-1234",
+            "date": Date.now()
+        };
+        
+        ws.send(JSON.stringify(msg));
+    }
+
+    function insertData() {
+        var msg = {
+            "type": "request",
+            "method": "insertData",
+            "data":{'key':document.getElementById('value').value},
+            "id": "abcd-1234",
+            "date": Date.now()
+        };
+        
+        ws.send(JSON.stringify(msg));
+    }
+  </script>
+</head>
+
+<body>
+    <button onCLick="getAllData()">GetAllData</button>
+    
+    <form>
+        <input type="text" id="value"/>
+        <button onCLick="insertData()">InsertData</button>
+    </form>
+</body>
+
+</html>
