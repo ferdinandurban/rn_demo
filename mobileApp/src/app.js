@@ -2,10 +2,11 @@
 import React, 
        { Component }    from 'react';
 import { Navigator,
-         StyleSheet,
          View }         from 'react-native';
 
-import Main           from './scenes/main';
+import Main           	from './scenes/main';
+
+import containers 		from './styles/containers';
 
 class App extends Component {
 	constructor(props) {
@@ -24,7 +25,7 @@ class App extends Component {
 
 	render() {
 		return (
-			<View>
+			<View style={containers.container}>
 				{this.renderContent()}
 			</View>
 		);

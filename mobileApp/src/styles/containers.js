@@ -5,6 +5,11 @@ const containers = StyleSheet.create({
     flex: 1,
     marginTop: 40,
   },
+  list: {
+    flex: 1,
+    marginTop: 10,
+    marginLeft: 20
+  },
   separator: {
     flex: 1,
     height: StyleSheet.hairlineWidth,

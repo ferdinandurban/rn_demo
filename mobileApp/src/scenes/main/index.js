@@ -8,19 +8,7 @@ import {
     View }              from 'react-native';
 
 import demoData         from './data'
-
-// import containers       from '../../styles/containers'
-const containers = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: 40,
-  },
-  separator: {
-    flex: 1,
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: '#8E8E8E',
-  },
-});
+import containers       from '../../styles/containers'
 
 export default class Main extends Component {
     constructor(props) {
@@ -53,21 +41,9 @@ export default class Main extends Component {
         }
     }
     
-    getWSData() {
-        if(this.state.connected){
-            var msg = {
-                "type": "request",
-                "method": "getAllData",
-                "id": "abcd-1234",
-                "date": Date.now()
-            };
-            this.socket.send(JSON.stringify(msg));
-        }        
-    }
-    
     render() {
         return (
-            <View style={containers.container}>
+            <View style={containers.list}>
             <FlatList
                 data={this.state.data}
                 renderItem={({item}) => <Text>{item.key}</Text>}
