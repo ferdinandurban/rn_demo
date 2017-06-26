@@ -8,7 +8,7 @@ const containers = StyleSheet.create({
   list: {
     flex: 1,
     marginTop: 10,
-    marginLeft: 20
+    marginLeft: 0
   },
   separator: {
     flex: 1,

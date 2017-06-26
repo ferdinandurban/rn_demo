@@ -7,6 +7,10 @@ import {
     StyleSheet,
     View }              from 'react-native';
 
+import {
+    List,
+    ListItem }          from 'react-native-elements';
+
 import demoData         from './data'
 import containers       from '../../styles/containers'
 
@@ -36,7 +40,7 @@ export default class Main extends Component {
         }
 
         this.socket.onmessage = (evt) => {
-            this.state.data = evt.data;
+            this.setState({data: JSON.parse(evt.data)});
             console.log(evt.data);
         }
     }
@@ -44,10 +48,18 @@ export default class Main extends Component {
     render() {
         return (
             <View style={containers.list}>
-            <FlatList
-                data={this.state.data}
-                renderItem={({item}) => <Text>{item.key}</Text>}
-                />
+                <List>
+                    {
+                        this.state.data.map((item, i) => (
+                        <ListItem
+                            hideChevron={true}
+                            key={i}
+                            title={item._id}
+                            subtitle={item.key}
+                        />
+                        ))
+                    }
+                    </List>
             </View>
         );
     }
