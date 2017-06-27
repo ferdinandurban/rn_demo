@@ -1,4 +1,7 @@
-// Very simple websocket server: echo incoming message to all connected clients
+/**
+ * Very simple NodeJS WebSockets server that handle a simple API for inserting and getting data from mem cache (tingodb)
+ */
+
 var ws = require('nodejs-websocket');
 const args = process.argv;
 var PORT = 3005;
@@ -16,6 +19,10 @@ var collection = db.collection("demo_collection");
 console.log("Listenning on port " + PORT);
 var server = ws.createServer(socketConnection).listen(PORT);
 
+/**
+ * Handle socket connection
+ * @param {*} conn 
+ */
 function socketConnection(conn) {
 	console.log('New connection established.', new Date().toLocaleTimeString());
 
@@ -25,39 +32,71 @@ function socketConnection(conn) {
 		message = JSON.parse(str);
 		
 		switch(message.method){
+			case 'deleteAllData':
+				deleteAllData((err, resp) => {
+					if(err){
+						handleError(resp, err.message, 'Getting data failed', 500);
+					}
+
+					
+					var msg = {
+						"type": "response",
+						"method": "deleteAllData",
+						"data": resp
+					}
+					console.log(msg);
+
+					conn.sendText(JSON.stringify(msg));
+
+					// create a new collection for the future
+					createCollection('demo_collection', (err, coll) => {
+						console.log(err);
+						console.log(coll);
+					});
+				});
+				break;
+
 			case 'getAllData':
-				getAllData((err, resp) =>{
+				getAllData((err, resp) => {
 					if(err){
 						handleError(resp, err.message, 'Getting data failed', 500);
 					}
 					
-					console.log('[<<] ' + JSON.stringify(resp));
-					conn.sendText(JSON.stringify(resp));
+					var msg = {
+						"type": "response",
+						"method": "getAllData",
+						"data": resp
+					}
+					console.log(msg);
+					conn.sendText(JSON.stringify(msg));
 				});
 				break;
+
 			case 'insertData':
 				insertData(message.data, (err, resp) => {
 					if(err){
 						handleError(resp, err.message, 'Inserting data failed', 500);
 					}
-
-					console.log('[<<] ' + JSON.stringify(resp));
-					conn.sendText(JSON.stringify(resp));
+					var msg = {
+						"type": "response",
+						"method": "insertData",
+						"data": resp
+					}
+					console.log(msg);
+					conn.sendText(JSON.stringify(msg));
 				});
 				break;
 			default:
 				console.log(str.method);
 				break;
-
 		}
-		
-		
 	});
 	
 	conn.on('close', (code, reason) => {		
 		console.log('Connection closed.', new Date().toLocaleTimeString());
 	});
 }
+
 
 /**
  * Handle errors during WS communication
@@ -72,6 +111,35 @@ function handleError(res, reason, message, code) {
     res.status(code || 500).json({
         "error": message
     });
+}
+
+/**
+ * Creates a new collection
+ * @param {*} name 
+ * @param {*} cb 
+ */
+function createCollection(name, cb) {
+	console.log('Creating a new collection');
+	db.createCollection(name,(err, coll) => {
+		if(err){
+			return (err, null);
+		}
+
+		collection = coll;
+		console.log('Collection created');
+
+		return (null, coll);
+	});
+}
+
+/**
+ * Drop the collection
+ * @return 	true when successfully drops the collection, 
+ * 			false if the collection does not exists
+ */
+function deleteAllData(cb) {
+	// drop the collection
+	db.dropCollection('demo_collection', cb);
 }
 
 /**
