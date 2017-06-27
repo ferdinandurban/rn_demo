@@ -104,13 +104,13 @@ export default class Main extends Component {
     }
 
     _generateNewData() {
-		console.log('Generating random data...');
+        console.log('Generating random data...');
 
-		var rnd = Math.random();
+        var rnd = Math.random();
         var msg = this._buildMessage(WS_METHOD.INSERT, rnd);
         
         this._send(JSON.stringify(msg));
-  	}
+      }
 
     _send(data){
         if(this.state.connected){
@@ -129,12 +129,12 @@ export default class Main extends Component {
         return (
             <View style={containers.list}>
                 <Button
-					icon={{name: 'plus', size: 20, type:'font-awesome'}}
-					buttonStyle={buttons.basic}
-					textStyle={{textAlign: 'center'}}
-					title={`Add Random Data`}
+                    icon={{name: 'plus', size: 20, type:'font-awesome'}}
+                    buttonStyle={buttons.basic}
+                    textStyle={{textAlign: 'center'}}
+                    title={`Add Random Data`}
                     onPress={() => this._generateNewData()}
-				/>
+                />
 
                 <ScrollView>
                     <List style={containers.list}>
@@ -151,12 +151,12 @@ export default class Main extends Component {
                 </ScrollView>
 
                 <Button
-					icon={{name: 'trash', size: 20, type:'font-awesome'}}
-					buttonStyle={buttons.remove}
-					textStyle={{textAlign: 'center'}}
-					title={`Delete All Data`}
+                    icon={{name: 'trash', size: 20, type:'font-awesome'}}
+                    buttonStyle={buttons.remove}
+                    textStyle={{textAlign: 'center'}}
+                    title={`Delete All Data`}
                     onPress={() => this._deleteData()}
-				/>
+                />
 
                 <Text style={texts.subheader}>
                     {`${this.state.connected ? 'Connected to WebSockets Server.' : 'Not connected to WebSockets Server.'} Items(${this.state.data.length})`}</Text>
