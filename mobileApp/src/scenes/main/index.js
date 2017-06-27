@@ -1,8 +1,17 @@
-
-import React, { 
-    Component }         from 'react';
+/**
+ * Basic UI to show data received from the server.
+ * 
+ * It connects to the server and download all data stored in the database.
+ * 
+ * There are also ability to add a new data or delete all data.
+ * 
+ * There is no ability to reconnect when the connection is lost. 
+ * The UI must be refreshed manually.
+ * 
+ */
+import React, 
+    { Component }       from 'react';
 import {
-    FlatList,
     ListView,
     ScrollView,
     Text,
@@ -23,6 +32,7 @@ var WS_METHOD  = {
     INSERT          : 'insertData',
     DELETE_ALL      : 'deleteAllData'
 };
+
 export default class Main extends Component {
     constructor(props) {
         super(props)
@@ -32,7 +42,12 @@ export default class Main extends Component {
             connected: false
         }
 
-        this.socket = new WebSocket('ws://localhost:3005');
+        // connect to the socket server
+        this.socket = new WebSocket(LOCAL_WEBSOCKET_SERVER);
+
+        // on open the conection 
+        // - change the state
+        // - download all data
         this.socket.onopen = () => {
             this.setState ({connected: true});   
             var msg = {
@@ -44,15 +59,24 @@ export default class Main extends Component {
             this._send(JSON.stringify(msg));         
         }
 
+        // on received message
+        // - check the message
         this.socket.onmessage = (evt) => {
             this._checkMessage(evt.data);
         }
 
+        // on close the connection
+        // - update the state
         this.socket.onclose = (evt) => {
             this.setState({connected: false});
         }
     }
     
+    /**
+     * Builds a message data
+     * @param {*} method from WS_METHOD enum
+     * @param {*} data 
+     */
     _buildMessage(method, data){
         var msg = {
             "type": "request",
@@ -65,6 +89,11 @@ export default class Main extends Component {
         return msg;
     }
 
+    /**
+     * Checks if the received message is correct and provide
+     * adequate actions
+     * @param {*} data 
+     */
     _checkMessage(data){
         var msgObj = JSON.parse(data);
 
@@ -94,6 +123,9 @@ export default class Main extends Component {
         }
     }
 
+    /**
+     * Delete all data on the server side
+     */
     _deleteData() {
         console.log('Deleting all data');
         var msg = this._buildMessage(WS_METHOD.DELETE_ALL, null);
@@ -101,6 +133,9 @@ export default class Main extends Component {
         this._send(JSON.stringify(msg));
     }
 
+    /**
+     * Generates a new random data and send them to the server
+     */
     _generateNewData() {
         console.log('Generating random data...');
 
@@ -110,12 +145,19 @@ export default class Main extends Component {
         this._send(JSON.stringify(msg));
       }
 
+    /**
+     * Sends a data via WS
+     * @param {*} data JSON string to be sent
+     */
     _send(data) {
         if(this.state.connected) {
             this.socket.send(data);
         }
     }
 
+    /**
+     * Render UI
+     */
     render() {
         return (
             <View style={containers.list}>
