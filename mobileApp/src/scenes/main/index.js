@@ -12,7 +12,7 @@ import {
 import {
     Button,
     List,
-    ListItem}          from 'react-native-elements';
+    ListItem}           from 'react-native-elements';
 
 import buttons          from '../../styles/buttons';
 import containers       from '../../styles/containers';
@@ -46,7 +46,6 @@ export default class Main extends Component {
 
         this.socket.onmessage = (evt) => {
             this._checkMessage(evt.data);
-            // this.setState({data: JSON.parse(evt.data)});
         }
 
         this.socket.onclose = (evt) => {
@@ -78,7 +77,6 @@ export default class Main extends Component {
                         tmpData.push(element);    
                     });
                     
-
                     this.setState({data: tmpData});
                     break;
 
@@ -112,19 +110,12 @@ export default class Main extends Component {
         this._send(JSON.stringify(msg));
       }
 
-    _send(data){
-        if(this.state.connected){
+    _send(data) {
+        if(this.state.connected) {
             this.socket.send(data);
         }
     }
 
-    _renderRow (rowData,) {
-        return (
-            <Text>{rowData.key}</Text>
-        )
-    
-    }
-    
     render() {
         return (
             <View style={containers.list}>

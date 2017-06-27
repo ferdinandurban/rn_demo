@@ -13,7 +13,7 @@ if(args.length > 2){
 var Db = require('tingodb')().Db,
 	assert = require('assert');
 
-var db = new Db('./data', {});
+var db = new Db('./', {});
 var collection = db.collection("demo_collection");
 
 console.log("Listenning on port " + PORT);
